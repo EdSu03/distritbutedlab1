@@ -15,7 +15,7 @@ type Message struct {
 func handleError(err error) {
 	// TODO: all
 	// Deal with an error event.
-	fmt.Println(err)
+	//fmt.Println(err)
 }
 
 func acceptConns(ln net.Listener, conns chan net.Conn) {
@@ -86,8 +86,8 @@ func main() {
 			// Send the message to all clients that aren't the sender
 			senderID := msg.sender
 			for i, _ := range clients {
-				if i == senderID {
-					fmt.Println("PRINTING TO ID ", i)
+				if i != senderID {
+					//fmt.Println("PRINTING TO ID ", i)
 					fmt.Fprintf(clients[i], msg.message)
 				}
 			}

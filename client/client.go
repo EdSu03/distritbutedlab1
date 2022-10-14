@@ -13,7 +13,9 @@ func read(conn net.Conn) {
 	reader := bufio.NewReader(conn)
 	for {
 		msg, _ := reader.ReadString('\n')
-		fmt.Println("received message:", msg)
+		fmt.Println("\nreceived message:", msg)
+		fmt.Printf("Enter Text:")
+
 	}
 }
 
@@ -21,9 +23,10 @@ func write(conn net.Conn) {
 	//TODO Continually get input from the user and send messages to the server.
 	stdin := bufio.NewReader(os.Stdin)
 	for {
-		fmt.Println("Enter text:")
+		fmt.Printf("Enter text:")
 		msg, _ := stdin.ReadString('\n')
-		fmt.Fprintln(conn, msg)
+		fmt.Println("Message Sent")
+		fmt.Fprintf(conn, msg)
 	}
 }
 
@@ -36,8 +39,5 @@ func main() {
 	//TODO Start getting and sending user messages.
 	conn, _ := net.Dial("tcp", *addrPtr)
 	go write(conn)
-	go read(conn)
-	for {
-
-	}
+	read(conn)
 }
