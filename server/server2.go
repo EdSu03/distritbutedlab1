@@ -66,7 +66,7 @@ func main() {
 	msgs := make(chan Message)
 	//Create a mapping of IDs to connections
 	clients := make(map[int]net.Conn)
-
+	fmt.Println("Starting connection on:" + *portPtr)
 	//Start accepting connections
 	go acceptConns(ln, conns)
 	newestID := 0
