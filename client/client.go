@@ -8,23 +8,29 @@ import (
 	"os"
 )
 
-func read(conn net.Conn) {
+func read(conn net.Conn, s chan bool) {
 	//TODO In a continuous loop, read a message from the server and display it.
 	reader := bufio.NewReader(conn)
 	for {
 		msg, _ := reader.ReadString('\n')
+		if msg == "shutdown" {
+			s <- true
+		}
 		fmt.Println("\nreceived message:", msg)
 		fmt.Printf("Enter Text:")
 
 	}
 }
 
-func write(conn net.Conn) {
+func write(conn net.Conn, s chan bool) {
 	//TODO Continually get input from the user and send messages to the server.
 	stdin := bufio.NewReader(os.Stdin)
 	for {
 		fmt.Printf("Enter text:")
 		msg, _ := stdin.ReadString('\n')
+		if msg == "shutdown" {
+			s <- true
+		}
 		fmt.Println("Message Sent")
 		fmt.Fprintf(conn, msg)
 	}
@@ -37,7 +43,15 @@ func main() {
 	//TODO Try to connect to the server
 	//TODO Start asynchronously reading and displaying messages
 	//TODO Start getting and sending user messages.
+	s := make(chan bool)
+	shutDown := false
 	conn, _ := net.Dial("tcp", *addrPtr)
-	go write(conn)
-	read(conn)
+	go write(conn, s)
+	go read(conn, s)
+	for {
+		shutDown = <-s
+		if shutDown {
+			break
+		}
+	}
 }
