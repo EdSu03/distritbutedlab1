@@ -66,10 +66,11 @@ func main() {
 	msgs := make(chan Message)
 	//Create a mapping of IDs to connections
 	clients := make(map[int]net.Conn)
-	fmt.Println("Starting connection on:" + *portPtr)
+
 	//Start accepting connections
 	go acceptConns(ln, conns)
 	newestID := 0
+	//shutDown := false
 	for {
 		select {
 		case conn := <-conns:
@@ -90,6 +91,9 @@ func main() {
 					//fmt.Println("PRINTING TO ID ", i)
 					fmt.Fprintf(clients[i], msg.message)
 				}
+			}
+			if msg.message == "shutdown" {
+				break
 			}
 
 		}
