@@ -70,7 +70,7 @@ func main() {
 	//Start accepting connections
 	go acceptConns(ln, conns)
 	newestID := 0
-	//shutDown := false
+	shutDown := false
 	for {
 		select {
 		case conn := <-conns:
@@ -93,9 +93,12 @@ func main() {
 				}
 			}
 			if msg.message == "shutdown" {
-				break
+				shutDown = true
 			}
 
+		}
+		if shutDown {
+			break
 		}
 	}
 }
